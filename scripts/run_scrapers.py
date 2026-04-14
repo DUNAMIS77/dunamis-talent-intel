@@ -22,6 +22,21 @@ def scrape_kofia(dry_run: bool = False):
 
 
 @app.command()
+def scrape_wanted(talent: bool = True, jobs: bool = False, dry_run: bool = False):
+    """Scrape Wanted (원티드) talent profiles and/or job postings."""
+    from src.scrapers.wanted import run_talent, run_jobs
+    if talent:
+        console.print("[bold green]Scraping Wanted talent profiles...[/]")
+        created, updated = run_talent(dry_run=dry_run)
+        if not dry_run:
+            console.print(f"[green]Done — created: {created}, updated: {updated}[/]")
+    if jobs:
+        console.print("[bold green]Scraping Wanted + Jumpit job postings...[/]")
+        result = run_jobs(dry_run=dry_run)
+        console.print(f"[green]Found {result['firms']} hiring firms, {result['postings']} postings[/]")
+
+
+@app.command()
 def enrich(batch: bool = False, limit: int = 50):
     """Enrich unenriched candidates with Claude."""
     if batch:
